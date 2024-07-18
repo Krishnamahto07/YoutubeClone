@@ -13,8 +13,11 @@ const options = {
     }
   };
 
-  // const { data } = await axios.get(`${BASE_URL}/${url}`, options);
-    return true;
+  const { data } = await axios.get(`${BASE_URL}/${url}`, options);
+  console.log(`API CALLED ${url}....`);
+  console.log("....data :",data);
+  
+  return data;
     
 };
 

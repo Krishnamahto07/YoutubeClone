@@ -7,7 +7,7 @@ import VideoDetails from './components/VideoDetails';
 
 import { AppContext } from './context/contextApi';
 
-
+import "./App.css"
 function App() {
 
   // console.log("api key -",process.env.REACT_APP_API_KEY);
