@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { fetchDataFromApi } from '../utils/api';
+import { fetchDataFromApi ,fetchVideoDetails} from '../utils/api';
 import { Context } from "../context/contextApi"
 import ReactPlayer from 'react-player';
 import { abbreviateNumber } from 'js-abbreviation-number';
@@ -8,26 +8,46 @@ import SuggestionVideoCard from "./SuggestionVideoCard"
 import { AiOutlineLike } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 
+
 const VideoDetails = () => {
+  let temp;
+
   const { id } = useParams();
 
-  const { setLoading } = useContext(Context);
+  const { setLoading , videoDetail,setVideoDetail ,searchResults} = useContext(Context);
 
   const [video, setVideo] = useState();
   const [relatedVideos, setRelatedVideos] = useState();
-
+  const [views ,setViews] = useState();
   useEffect(() => {
     document.getElementById("root").classList.add("custom-h");
     fetchVideo();
     fetchRelatedVideo();
   }, [id])
-  const fetchVideo = () => {
+  
+  
+
+  const fetchVideo = () =>{
     setLoading(true);
-    fetchDataFromApi(`video/details/?id=${id}`).then((content) => {
-      console.log("VIDEO IN VIDEO DETAILS : ",content);
-      setVideo(content);
-      setLoading(false);
-    }).catch((error) => console.log("ERROR IN FEtch vido details",error))
+    if(searchResults){
+      for (let index = 0; index < searchResults.length; index++) {
+        const element = searchResults[index].video.videoId;
+        if(element === id) {
+          console.log("VIDEO ",searchResults[index].video)
+          temp = searchResults[index].video;
+          setVideo(temp);
+          if(searchResults[index].video?.stats?.views){
+            setViews(searchResults[index].video?.stats?.views);
+          }
+          else if(searchResults[index].video?.stats?.viewers){
+            setViews(searchResults[index].video?.stats?.viewers*100);
+          }
+          else setViews(Math.random()*100+Math.random()*3);
+          break;
+        }
+      }
+    }
+    setLoading(false);
   }
 
   const fetchRelatedVideo = () => {
@@ -54,7 +74,7 @@ const VideoDetails = () => {
               playing={true}
             />
           </div>
-          <div className="text-white font-bold text-sm md:text-xl mt-4 line-clamp-2">
+          <div className="text-white font-bold text-sm md:text-xl mt-4 ">
             {video?.title}
           </div>
           <div className="flex justify-between flex-col md:flex-row mt-4">
@@ -62,8 +82,9 @@ const VideoDetails = () => {
               <div className="flex items-start">
                 <div className="flex h-11 w-11 rounded-full overflow-hidden">
                   <img
+                   loading='lazy'
                     className="h-full w-full object-cover"
-                    src={video?.author?.avatar[0]?.url}
+                    src={video?.author?.avatar[0].url}
                   />
                 </div>
               </div>
@@ -76,7 +97,7 @@ const VideoDetails = () => {
                     )}
                 </div>
                 <div className="text-white/[0.7] text-sm">
-                  {video?.author?.stats?.subscribersText}
+                  {`${abbreviateNumber(Math.floor( views  * Math.random()),2)}`}
                 </div>
               </div>
             </div>
@@ -84,22 +105,25 @@ const VideoDetails = () => {
               <div className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15]">
                 <AiOutlineLike className="text-xl text-white mr-2" />
                 {`${abbreviateNumber(
-                  video?.stats?.views,
+                    views / 3,
                   2
                 )} Likes`}
               </div>
               <div className="flex items-center justify-center h-11 px-6 rounded-3xl bg-white/[0.15] ml-4">
                 {`${abbreviateNumber(
-                  video?.stats?.views,
+                  views,
                   2
                 )} Views`}
               </div>
+
+
             </div>
           </div>
         </div>
-        <div className="flex flex-col py-6 px-4 overflow-y-auto lg:w-[350px] xl:w-[400px]">
+        <div className="flex flex-col py-6 px-4 overflow-y-auto overflow-auto lg:w-[350px] xl:w-[400px]">
           {relatedVideos?.contents?.map((item, index) => {
             if (item?.type !== "video") return false;
+            if(index === 0) console.log(item?.video);
             return (
               <SuggestionVideoCard
                 key={index}
@@ -110,6 +134,9 @@ const VideoDetails = () => {
         </div>
       </div>
     </div>
+
+    
+    
   )
 }
 

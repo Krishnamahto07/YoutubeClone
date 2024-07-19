@@ -10,8 +10,9 @@ export const AppContext = (props) =>{
     const [searchResults , setSearchResults ] = useState(false);    
     const [selectCategories , setSelectCategories ] = useState("New");
     const [mobileMenu , setMobileMenu ] = useState(false);
+    const [videoDetail , setVideoDetail] = useState(false);
 
-    const temp = [
+ const temp = [
         {
             "type": "video",
             "video": {
@@ -1735,7 +1736,7 @@ export const AppContext = (props) =>{
     ]
 
 
-
+    
 
 
 
@@ -1759,7 +1760,9 @@ export const AppContext = (props) =>{
             loading,setLoading,
             searchResults,setSearchResults,
             selectCategories,setSelectCategories,
-            mobileMenu,setMobileMenu
+            mobileMenu,setMobileMenu,
+            videoDetail,setVideoDetail
+
         }} >
             {props.children}
         </Context.Provider>

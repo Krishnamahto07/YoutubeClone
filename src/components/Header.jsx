@@ -44,7 +44,7 @@ const Header = () => {
 
   const pageName = pathname?.split("/")?.filter(Boolean)?.[0];
 
-  console.log("pageName ", pageName);
+  // console.log("pageName ", pageName);
 
   return (
     <div className="sticky top-0 z-10 flex flex-row items-center justify-between h-14 px-4 md:px-5 bg-white dark:bg-black">
@@ -125,23 +125,6 @@ const Header = () => {
                     <img src="https://xsgames.co/randomusers/assets/avatars/female/67.jpg" />
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     </div>
   )
